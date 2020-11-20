@@ -51,17 +51,22 @@ Construa um grafo ligando os medicamentos aos efeitos colaterais (com pesos asso
 
 ### Resolução
 ~~~cypher
-(escreva aqui a resolução em Cypher)
+
+// Carrega os usos do medicamentos
 
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/santanche/lab2learn/master/data/faers-2017/drug-use.csv' AS line
 CREATE(:DrugUse {idPerson: line.idperson, codePathology: line.codepathology, codeDrug: line.codedrug})
 
 CREATE INDEX ON : DrugUse (idPerson)
 
+// Carrega os efeitos colaterais
+
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/santanche/lab2learn/master/data/faers-2017/sideeffect.csv' AS line
 CREATE(:SideEffect {idPerson: line.idPerson, codePathology: line.codePathology})
 
 CREATE INDEX ON : SideEffect (idPerson)
+
+// Relaciona os medicamentos com os efeitos ocorridos
 
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/santanche/lab2learn/master/data/faers-2017/sideeffect.csv' AS line
 
@@ -85,13 +90,17 @@ Proponha um tipo de análise e escreva uma sentença em Cypher que realize a an�
 
 ### Resolução
 ~~~cypher
-(escreva aqui a resolução em Cypher)
+
+// Associa um medicamento como potencial causador de uma patologia
+
 MATCH (d:Drug)-[c: CauseSideEffect]->(se:SideEffect)
 MATCH (p:Pathology {code: se.codePathology})
 
 MERGE (d)-[mc:MayCause]->(p)
 ON CREATE SET mc.weight=1
 ON MATCH SET mc.weight=mc.weight+1
+
+// Retorna os resultados dos relacionamentos
 
 MATCH (d)-[mc:MayCause]->(p)
 
