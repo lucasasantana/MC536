@@ -138,7 +138,6 @@ Liste todos os códigos ChEBI e primeiro nome (sinônimo) de cada um dos compone
 
 Resposta:
 
-```
 ```xquery
 let $content := doc('https://raw.githubusercontent.com/santanche/lab2learn/master/data/pubchem/pubchem-chebi-synonyms.xml')
 for $i in ($content//Information/Synonym[1]), $j in ($content//Synonym[substring(text(),0,6)="CHEBI"]/substring(text(),7))
